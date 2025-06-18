@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About | PokéVerse</title>
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#e53935',secondary:'#3b82f6'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+
+</head>
+<body class="bg-white text-gray-800">
+
+<!-- Header -->
+<header class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+<div class="container mx-auto px-4 py-3 flex items-center justify-between">
+<a href="#" class="text-primary text-3xl font-['Pacifico']">PokéVerse</a>
+<nav class="hidden md:flex items-center space-x-8">
+<a href="INDEX.HTML" class="text-gray-800 font-medium hover:text-primary transition-colors">Home</a>
+<a href="EXPLORE.HTML" class="text-gray-800 font-medium hover:text-primary transition-colors">Explore</a>
+<a href="NEWS.HTML" class="text-gray-800 font-medium hover:text-primary transition-colors">News</a>
+<a href="about.html" class="text-gray-800 font-medium hover:text-primary transition-colors">About</a>
+</nav>
+<div class="flex items-center space-x-4">
+<label class="custom-switch">
+<input type="checkbox" id="darkModeToggle">
+<span class="switch-slider"></span>
+</label>
+<button class="bg-white text-primary border border-primary px-4 py-2 rounded-button font-medium hover:bg-gray-50 transition-colors whitespace-nowrap">Log In</button>
+<button class="bg-primary text-white px-4 py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">Sign Up</button>
+<button class="md:hidden w-10 h-10 flex items-center justify-center text-gray-700">
+<i class="ri-menu-line ri-lg"></i>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pt-24 pb-16">
+  <div class="container mx-auto px-4">
+    <!-- Hero Section -->
+    <section class="text-center mb-16">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Welcome to PokéVerse</h1>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">Your ultimate destination for all things Pokémon. Explore, battle, and connect with trainers worldwide.</p>
+    </section>
+
+    <!-- Mission Statement -->
+    <section class="mb-16">
+      <div class="flex flex-col md:flex-row items-center gap-8">
+        <div class="md:w-1/2">
+          <img src="https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?auto=format&fit=crop&w=800&q=80" alt="Pokémon Adventure" class="rounded-lg shadow-md w-full">
+        </div>
+        <div class="md:w-1/2">
+          <h2 class="text-3xl font-semibold mb-4">Our Mission</h2>
+          <p class="text-gray-600 mb-4">At PokéVerse, we believe every trainer deserves a place to grow, learn, and explore the vast world of Pokémon. Whether you're just starting out or a seasoned veteran, our goal is to bring the joy of Pokémon to everyone.</p>
+          <p class="text-gray-600">From detailed Pokédex entries to in-depth battle strategies and community events, we’re here to help you become the very best — like no one ever was.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="mb-16">
+      <h2 class="text-3xl font-semibold text-center mb-8">Our Core Values</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-gray-100 p-6 rounded-lg text-center">
+          <i class="ri-heart-fill text-4xl text-primary mb-4"></i>
+          <h3 class="text-xl font-semibold mb-2">Passion for Pokémon</h3>
+          <p class="text-gray-600">We love Pokémon as much as you do — it’s what drives everything we create.</p>
+        </div>
+        <div class="bg-gray-100 p-6 rounded-lg text-center">
+          <i class="ri-team-fill text-4xl text-primary mb-4"></i>
+          <h3 class="text-xl font-semibold mb-2">Community First</h3>
+          <p class="text-gray-600">Trainers around the world are at the heart of our mission. We build tools to bring people together.</p>
+        </div>
+        <div class="bg-gray-100 p-6 rounded-lg text-center">
+          <i class="ri-lightbulb-flash-fill text-4xl text-primary mb-4"></i>
+          <h3 class="text-xl font-semibold mb-2">Innovation & Fun</h3>
+          <p class="text-gray-600">We strive to innovate while keeping the fun alive in every feature and event we host.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Meet the Team -->
+    <section>
+      <h2 class="text-3xl font-semibold text-center mb-8">Meet the Team</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center">
+          <img src="https://i.pravatar.cc/150?img=1" alt="Team Member" class="w-24 h-24 mx-auto rounded-full mb-4">
+          <h3 class="text-lg font-semibold">Ash Ketchum</h3>
+          <p class="text-gray-600">Founder & Head Trainer</p>
+        </div>
+        <div class="text-center">
+          <img src="https://i.pravatar.cc/150?img=2" alt="Team Member" class="w-24 h-24 mx-auto rounded-full mb-4">
+          <h3 class="text-lg font-semibold">Misty Williams</h3>
+          <p class="text-gray-600">Community Manager</p>
+        </div>
+        <div class="text-center">
+          <img src="https://i.pravatar.cc/150?img=3" alt="Team Member" class="w-24 h-24 mx-auto rounded-full mb-4">
+          <h3 class="text-lg font-semibold">Brock Harrison</h3>
+          <p class="text-gray-600">Game Developer</p>
+        </div>
+        <div class="text-center">
+          <img src="https://i.pravatar.cc/150?img=4" alt="Team Member" class="w-24 h-24 mx-auto rounded-full mb-4">
+          <h3 class="text-lg font-semibold">Gary Oak</h3>
+          <p class="text-gray-600">Content Strategist</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white pt-12 pb-6">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+      <div>
+        <h3 class="text-xl font-['Pacifico'] mb-4">PokéVerse</h3>
+        <p class="text-gray-400 mb-4">Your ultimate destination for all things Pokémon. Explore, battle, and connect with trainers worldwide.</p>
+        <div class="flex space-x-4">
+          <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors"> 
+            <i class="ri-facebook-fill"></i>
+          </a>
+          <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+            <i class="ri-twitter-x-fill"></i>
+          </a>
+          <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+            <i class="ri-instagram-fill"></i>
+          </a>
+          <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+            <i class="ri-discord-fill"></i>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+        <ul class="space-y-2">
+          <li><a href="INDEX.HTML" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+          <li><a href="EXPLORE.HTML" class="text-gray-400 hover:text-white transition-colors">Pokédex</a></li>
+          <li><a href="NEWS.HTML" class="text-gray-400 hover:text-white transition-colors">News & Events</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-lg font-semibold mb-4">Support</h4>
+        <ul class="space-y-2">
+          <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Community Guidelines</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-lg font-semibold mb-4">Contact Us</h4>
+        <ul class="space-y-2">
+          <li class="flex items-start">
+            <i class="ri-map-pin-line mt-1 mr-2 text-gray-400"></i>
+            <span class="text-gray-400">123 Poké Street, Kanto Region, 94538</span>
+          </li>
+          <li class="flex items-center">
+            <i class="ri-mail-line mr-2 text-gray-400"></i>
+            <a href="mailto:info@pokeverse.com" class="text-gray-400 hover:text-white transition-colors">info@pokeverse.com</a>
+          </li>
+          <li class="flex items-center">
+            <i class="ri-phone-line mr-2 text-gray-400"></i>
+            <a href="tel:+1234567890" class="text-gray-400 hover:text-white transition-colors">+1 (234) 567-890</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 pt-6">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2025 PokéVerse. All rights reserved. Pokémon and related properties are trademarks of Nintendo.</p>
+        <div class="flex space-x-4">
+          <i class="ri-visa-fill text-2xl text-gray-400"></i>
+          <i class="ri-mastercard-fill text-2xl text-gray-400"></i>
+          <i class="ri-paypal-fill text-2xl text-gray-400"></i>
+          <i class="ri-apple-fill text-2xl text-gray-400"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<script id="darkModeToggle">
+document.addEventListener('DOMContentLoaded', function() {
+const darkModeToggle = document.getElementById('darkModeToggle');
+darkModeToggle.addEventListener('change', function() {
+if (this.checked) {
+document.documentElement.classList.add('dark');
+} else {
+document.documentElement.classList.remove('dark');
+}
+});
+});
+</script>
+<script id="searchFunctionality">
+document.addEventListener('DOMContentLoaded', function() {
+const searchInput = document.querySelector('.search-input');
+searchInput.addEventListener('focus', function() {
+this.classList.add('border-primary');
+});
+searchInput.addEventListener('blur', function() {
+this.classList.remove('border-primary');
+});
+});
+</script>
+</body>
+</html>

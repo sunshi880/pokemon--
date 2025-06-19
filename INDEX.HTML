@@ -1,0 +1,519 @@
+<!DOCTYPE html>                                                                                                                                                           
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PokéVerse - Your Ultimate Pokémon Universe</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#e53935',secondary:'#3b82f6'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+body {
+font-family: 'Montserrat', sans-serif;
+}
+.search-input:focus {
+outline: none;
+box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.3);
+}
+.hero-section {
+position: relative;
+background-size: cover;
+background-position: right center;
+}
+.hero-section::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.9) 40%, rgba(255,255,255,0.6) 70%, rgba(255,255,255,0) 100%);
+z-index: 1;
+}
+.hero-content {
+position: relative;
+z-index: 2;
+}
+.custom-checkbox {
+appearance: none;
+-webkit-appearance: none;
+width: 20px;
+height: 20px;
+border: 2px solid #e5e7eb;
+border-radius: 4px;
+cursor: pointer;
+position: relative;
+transition: all 0.2s ease;
+}
+.custom-checkbox:checked {
+background-color: #e53935;
+border-color: #e53935;
+}
+.custom-checkbox:checked::after {
+content: '';
+position: absolute;
+top: 3px;
+left: 6px;
+width: 6px;
+height: 10px;
+border: solid white;
+border-width: 0 2px 2px 0;
+transform: rotate(45deg);
+}
+.custom-switch {
+position: relative;
+display: inline-block;
+width: 48px;
+height: 24px;
+}
+.custom-switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+.switch-slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #e5e7eb;
+transition: .4s;
+border-radius: 24px;
+}
+.switch-slider:before {
+position: absolute;
+content: "";
+height: 18px;
+width: 18px;
+left: 3px;
+bottom: 3px;
+background-color: white;
+transition: .4s;
+border-radius: 50%;
+}
+input:checked + .switch-slider {
+background-color: #e53935;
+}
+input:checked + .switch-slider:before {
+transform: translateX(24px);
+}
+</style>
+</head>
+<body class="bg-white min-h-screen flex flex-col">
+<!-- Header -->
+<header class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+<div class="container mx-auto px-4 py-3 flex items-center justify-between">
+<a href="#" class="text-primary text-3xl font-['Pacifico']">PokéVerse</a>
+<nav class="hidden md:flex items-center space-x-8">
+<a href="#" class="text-gray-800 font-medium hover:text-primary transition-colors">Home</a>
+<a href="EXPLORE.HTML" class="text-gray-800 font-medium hover:text-primary transition-colors">Explore</a>
+<a href="NEWS.HTML" class="text-gray-800 font-medium hover:text-primary transition-colors">News</a>
+<a href="about.html" class="text-gray-800 font-medium hover:text-primary transition-colors">About</a>
+</nav>
+<div class="flex items-center space-x-4">
+<label class="custom-switch">
+<input type="checkbox" id="darkModeToggle">
+<span class="switch-slider"></span>
+</label>
+<button class="bg-white text-primary border border-primary px-4 py-2 rounded-button font-medium hover:bg-gray-50 transition-colors whitespace-nowrap">Log In</button>
+<button class="bg-primary text-white px-4 py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">Sign Up</button>
+<button class="md:hidden w-10 h-10 flex items-center justify-center text-gray-700">
+<i class="ri-menu-line ri-lg"></i>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow pt-16">
+<!-- Hero Section -->
+<section class="hero-section w-full h-[500px]" style="background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/39c9eb9f-a9bd-4ed9-beb3-9a6c48ade337/dfsb9vn-789f517b-8d88-45bf-878e-d001a26ea477.jpg/v1/fill/w_1192,h_670,q_70,strp/ash_with_his_pokemon__goodbye_ash__by_mariokero345_dfsb9vn-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NzIwIiwicGF0aCI6IlwvZlwvMzljOWViOWYtYTliZC00ZWQ5LWJlYjMtOWE2YzQ4YWRlMzM3XC9kZnNiOXZuLTc4OWY1MTdiLThkODgtNDViZi04NzhlLWQwMDFhMjZlYTQ3Ny5qcGciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.B9Jna7R7QGg12T8h25pO2xLAE2iNrwvl7fpSqGTQqo4')">
+<div class="container mx-auto px-4 h-full">
+<div class="hero-content flex flex-col justify-center h-full max-w-lg">
+<h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Discover the World of Pokémon</h1>
+<p class="text-lg text-gray-700 mb-8">Explore hundreds of Pokémon, build your dream team, and battle with trainers from around the world.</p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="bg-primary text-white px-6 py-3 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">
+<i class="ri-compass-3-line mr-2"></i>Start Exploring
+</button>
+<button class="bg-white text-gray-800 border border-gray-300 px-6 py-3 rounded-button font-medium hover:bg-gray-50 transition-colors whitespace-nowrap">
+<i class="ri-information-line mr-2"></i>Learn More
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Search Section -->
+<section class="py-12 bg-gray-50">
+<div class="container mx-auto px-4">
+<div class="max-w-3xl mx-auto">
+<h2 class="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-8">Find Your Favorite Pokémon</h2>
+<div class="relative mb-6">
+<input type="text" placeholder="Search by name or ID..." class="search-input w-full px-5 py-4 pr-12 bg-white border border-gray-300 rounded-lg text-gray-700 focus:border-primary transition-colors">
+<button class="absolute right-4 top-1/2 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center text-gray-500 hover:text-primary">
+<i class="ri-search-line ri-xl"></i>
+</button>
+</div>
+<div class="flex flex-wrap gap-2 justify-center">
+<button class="bg-red-100 text-red-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-red-200 transition-colors whitespace-nowrap">
+<i class="ri-fire-line mr-1"></i>Fire
+</button>
+<button class="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-200 transition-colors whitespace-nowrap">
+<i class="ri-water-flash-line mr-1"></i>Water
+</button>
+<button class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-green-200 transition-colors whitespace-nowrap">
+<i class="ri-plant-line mr-1"></i>Grass
+</button>
+<button class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-yellow-200 transition-colors whitespace-nowrap">
+<i class="ri-flashlight-line mr-1"></i>Electric
+</button>
+<button class="bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-purple-200 transition-colors whitespace-nowrap">
+<i class="ri-ghost-line mr-1"></i>Psychic
+</button>
+<button class="bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors whitespace-nowrap">
+<i class="ri-more-line mr-1"></i>More Types
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured Pokémon -->
+<section class="py-16">
+<div class="container mx-auto px-4">
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-2xl md:text-3xl font-bold text-gray-900">Featured Pokémon</h2>
+<a href="EXPLORE.HTML" data-readdy="true" class="text-primary font-medium flex items-center hover:underline">
+View All <i class="ri-arrow-right-line ml-1"></i>
+</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Pokémon Card 1 -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105">
+<div class="h-48 bg-red-50 flex items-center justify-center p-4">
+<img src="https://th.bing.com/th/id/R.91f409ca64a28fd0dbebcb05b8b41f7f?rik=TT6j%2f5QxhW7bcw&pid=ImgRaw&r=0">
+</div>
+<div class="p-4">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold text-gray-900">Charizard</h3>
+<span class="text-sm text-gray-500">#006</span>
+</div>
+<div class="flex gap-2 mb-3">
+<span class="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-medium">Fire</span>
+<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">Flying</span>
+</div>
+<button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+</div>
+</div>
+<!-- Pokémon Card 2 -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105">
+<div class="h-48 bg-blue-50 flex items-center justify-center p-4">
+<img src="https://www.pngall.com/wp-content/uploads/15/Blastoise-PNG-Images.png" alt="Blastoise" class="h-full object-contain">
+</div>
+<div class="p-4">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold text-gray-900">Blastoise</h3>
+<span class="text-sm text-gray-500">#009</span>
+</div>
+<div class="flex gap-2 mb-3">
+<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">Water</span>
+</div>
+<button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+</div>
+</div>
+<!-- Pokémon Card 3 -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105">
+<div class="h-48 bg-green-50 flex items-center justify-center p-4">
+<img src="https://images.wikidexcdn.net/mwuploads/wikidex/thumb/b/be/latest/20160309230456/Venusaur.png/1298px-Venusaur.png" alt="Venusaur" class="h-full object-contain">
+</div>
+<div class="p-4">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold text-gray-900">Venusaur</h3>
+<span class="text-sm text-gray-500">#003</span>
+</div>
+<div class="flex gap-2 mb-3">
+<span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">Grass</span>
+<span class="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs font-medium">Poison</span>
+</div>
+<button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+</div>
+</div>
+<!-- Pokémon Card 4 -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105">
+<div class="h-48 bg-yellow-50 flex items-center justify-center p-4">
+<img src="https://readdy.ai/api/search-image?query=A%20detailed%2C%20clean%20digital%20illustration%20of%20Pikachu%2C%20the%20electric%20mouse%20Pok%C3%A9mon%20with%20yellow%20body%20and%20red%20cheeks%2C%20standing%20in%20a%20cute%20pose%20against%20a%20simple%20gradient%20background.%20The%20image%20should%20be%20high%20quality%20with%20clean%20lines%20and%20vibrant%20colors%2C%20focusing%20on%20the%20Pok%C3%A9mon%20with%20minimal%20background%20elements.&width=300&height=300&seq=pikachu-1&orientation=squarish" alt="Pikachu" class="h-full object-contain">
+</div>
+<div class="p-4">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold text-gray-900">Pikachu</h3>
+<span class="text-sm text-gray-500">#025</span>
+</div>
+<div class="flex gap-2 mb-3">
+<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-medium">Electric</span>
+</div>
+<button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Section -->
+<section class="py-16 bg-gray-50">
+<div class="container mx-auto px-4">
+<h2 class="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-12">Explore PokéVerse Features</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Feature 1 -->
+<div class="bg-white p-6 rounded-lg shadow-md">
+<div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+<i class="ri-book-open-line ri-xl text-primary"></i>
+</div>
+<h3 class="text-xl font-bold text-center text-gray-900 mb-3">Complete Pokédex</h3>
+<p class="text-gray-600 text-center mb-4">Access detailed information about all Pokémon species, including stats, abilities, and evolution chains.</p>
+<a href="#" class="block text-center text-primary font-medium hover:underline">Explore Pokédex</a>
+</div>
+<!-- Feature 2 -->
+<div class="bg-white p-6 rounded-lg shadow-md">
+<div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+<i class="ri-sword-line ri-xl text-blue-600"></i>
+</div>
+<h3 class="text-xl font-bold text-center text-gray-900 mb-3">Battle Simulator</h3>
+<p class="text-gray-600 text-center mb-4">Test your strategic skills with our battle simulator. Choose your team and face off against other trainers.</p>
+<a href="#" class="block text-center text-primary font-medium hover:underline">Enter Battle Arena</a>
+</div>
+<!-- Feature 3 -->
+<div class="bg-white p-6 rounded-lg shadow-md">
+<div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+<i class="ri-user-star-line ri-xl text-green-600"></i>
+</div>
+<h3 class="text-xl font-bold text-center text-gray-900 mb-3">Trainer Hub</h3>
+<p class="text-gray-600 text-center mb-4">Create your trainer profile, build your dream team, and connect with other Pokémon enthusiasts.</p>
+<a href="#" class="block text-center text-primary font-medium hover:underline">Visit Trainer Hub</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Latest News -->
+<section class="py-16">
+<div class="container mx-auto px-4">
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-2xl md:text-3xl font-bold text-gray-900">Latest News & Events</h2>
+<a href="NEWS.HTML" class="text-primary font-medium flex items-center hover:underline">
+View All News <i class="ri-arrow-right-line ml-1"></i>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- News Card 1 -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+<img src="data:image/webp;base64,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" alt="Pokémon Championship" class="w-full h-48 object-cover">
+<div class="p-4">
+<div class="flex items-center text-sm text-gray-500 mb-2">
+<i class="ri-calendar-line mr-1"></i>
+<span>June 5, 2025</span>
+</div>
+<h3 class="text-lg font-bold text-gray-900 mb-2">World Pokémon Championship 2025 Announced</h3>
+<p class="text-gray-600 mb-4">The official dates for the 2025 World Pokémon Championship have been announced. Get ready for the biggest competitive event of the year!</p>
+<a href="NEWS.HTML" data-readdy="true" class="text-primary font-medium hover:underline"> Read More</a>
+</div>
+</div>
+<!-- News Card 2 -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+<img src="https://th.bing.com/th/id/OIP.EE4Fu1ZthWqxUOppDzcjIgHaEK?r=0&rs=1&pid=ImgDetMain" alt="New Pokémon Game" class="w-full h-48 object-cover">
+<div class="p-4">
+<div class="flex items-center text-sm text-gray-500 mb-2">
+<i class="ri-calendar-line mr-1"></i>
+<span>May 28, 2025</span>
+</div>
+<h3 class="text-lg font-bold text-gray-900 mb-2">New Pokémon Game Release Date Revealed</h3>
+<p class="text-gray-600 mb-4">Nintendo has officially announced the release date for the next generation of Pokémon games. Pre-orders will be available next week.</p>
+<a href="#" data-readdy="true" class="text-primary font-medium hover:underline">Read More</a>
+</div>
+</div>
+<!-- News Card 3 -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+<img src="https://th.bing.com/th/id/OIP.ehvUJ0hcAeIjk4UDyrQztAHaDt?r=0&rs=1&pid=ImgDetMain" alt="Pokémon Anime" class="w-full h-48 object-cover">
+<div class="p-4">
+<div class="flex items-center text-sm text-gray-500 mb-2">
+<i class="ri-calendar-line mr-1"></i>
+<span>May 15, 2025</span>
+</div>
+<h3 class="text-lg font-bold text-gray-900 mb-2">New Pokémon Anime Series Coming This Fall</h3>
+<p class="text-gray-600 mb-4">The Pokémon Company has announced a brand new anime series featuring never-before-seen Pokémon and exciting new adventures.</p>
+<a href="#" data-readdy="true" class="text-primary font-medium hover:underline">Read More</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Community Section -->
+<section class="py-16 bg-gray-50">
+<div class="container mx-auto px-4">
+<h2 class="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-8">Join Our Community</h2>
+<p class="text-gray-600 text-center max-w-2xl mx-auto mb-10">Connect with thousands of Pokémon trainers from around the world. Share strategies, showcase your teams, and participate in community events.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+<!-- Community Stats -->
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="text-xl font-bold text-gray-900 mb-4">Community Stats</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="text-center p-4 bg-gray-50 rounded-lg">
+<span class="block text-3xl font-bold text-primary mb-1">125K+</span>
+<span class="text-gray-600">Active Trainers</span>
+</div>
+<div class="text-center p-4 bg-gray-50 rounded-lg">
+<span class="block text-3xl font-bold text-primary mb-1">3.2M+</span>
+<span class="text-gray-600">Battles Fought</span>
+</div>
+<div class="text-center p-4 bg-gray-50 rounded-lg">
+<span class="block text-3xl font-bold text-primary mb-1">890+</span>
+<span class="text-gray-600">Pokémon Species</span>
+</div>
+<div class="text-center p-4 bg-gray-50 rounded-lg">
+<span class="block text-3xl font-bold text-primary mb-1">450+</span>
+<span class="text-gray-600">Daily Events</span>
+</div>
+</div>
+</div>
+<!-- Newsletter Signup -->
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="text-xl font-bold text-gray-900 mb-4">Stay Updated</h3>
+<p class="text-gray-600 mb-4">Subscribe to our newsletter to receive the latest news, updates, and exclusive offers.</p>
+<form class="space-y-4">
+<div>
+<input type="text" placeholder="Your Name" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-700 focus:border-primary transition-colors">
+</div>
+<div>
+<input type="email" placeholder="Your Email" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-700 focus:border-primary transition-colors">
+</div>
+<div class="flex items-center">
+<input type="checkbox" id="termsCheck" class="custom-checkbox mr-2">
+<label for="termsCheck" class="text-sm text-gray-600">I agree to receive emails from PokéVerse</label>
+</div>
+<button type="submit" class="w-full bg-primary text-white py-3 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">Subscribe Now</button>
+</form>
+</div>
+</div>
+</div>
+</section>
+<!-- Download App Section -->
+<section class="py-16 bg-gradient-to-r from-primary to-red-700 text-white">
+<div class="container mx-auto px-4">
+<div class="flex flex-col md:flex-row items-center justify-between">
+<div class="md:w-1/2 mb-8 md:mb-0">
+<h2 class="text-2xl md:text-3xl font-bold mb-4">Take PokéVerse With You</h2>
+<p class="text-white/90 mb-6">Download our mobile app to access your Pokédex, battle other trainers, and stay connected with the Pokémon community on the go.</p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="bg-white text-primary px-6 py-3 rounded-button font-medium hover:bg-gray-100 transition-colors flex items-center justify-center whitespace-nowrap">
+<i class="ri-apple-fill ri-lg mr-2"></i>App Store
+</button>
+<button class="bg-white text-primary px-6 py-3 rounded-button font-medium hover:bg-gray-100 transition-colors flex items-center justify-center whitespace-nowrap">
+<i class="ri-google-play-fill ri-lg mr-2"></i>Google Play
+</button>
+</div>
+</div>
+<div class="md:w-1/2 flex justify-center">
+<img src="https://th.bing.com/th/id/OIP.TmYJLjAKB4v7G93n-qxmiAHaD0?r=0&o=7rm=3&rs=1&pid=ImgDetMain" alt="PokéVerse Mobile App" class="max-w-full h-auto rounded-lg shadow-lg">
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-gray-900 text-white pt-12 pb-6">
+<div class="container mx-auto px-4">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+<div>
+<h3 class="text-xl font-['Pacifico'] mb-4">PokéVerse</h3>
+<p class="text-gray-400 mb-4">Your ultimate destination for all things Pokémon. Explore, battle, and connect with trainers worldwide.</p>
+<div class="flex space-x-4">
+<a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+<i class="ri-facebook-fill"></i>
+</a>
+<a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+<i class="ri-twitter-x-fill"></i>
+</a>
+<a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+<i class="ri-instagram-fill"></i>
+</a>
+<a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+<i class="ri-discord-fill"></i>
+</a>
+</div>
+</div>
+<div>
+<h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+<ul class="space-y-2">
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+<li><a href="EXPLORE.HTML" class="text-gray-400 hover:text-white transition-colors">Pokédex</a></li>
+<li><a href="NEWS.HTML" class="text-gray-400 hover:text-white transition-colors">News & Events</a></li>
+<li><a href="about.html" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-lg font-semibold mb-4">Support</h4>
+<ul class="space-y-2">
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">Community Guidelines</a></li>
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-lg font-semibold mb-4">Contact Us</h4>
+<ul class="space-y-2">
+<li class="flex items-start">
+<i class="ri-map-pin-line mt-1 mr-2 text-gray-400"></i>
+<span class="text-gray-400">123 Poké Street, Kanto Region, 94538</span>
+</li>
+<li class="flex items-center">
+<i class="ri-mail-line mr-2 text-gray-400"></i>
+<a href="mailto:info@pokeverse.com" class="text-gray-400 hover:text-white transition-colors">info@pokeverse.com</a>
+</li>
+<li class="flex items-center">
+<i class="ri-phone-line mr-2 text-gray-400"></i>
+<a href="tel:+1234567890" class="text-gray-400 hover:text-white transition-colors">+1 (234) 567-890</a>
+</li>
+</ul>
+</div>
+</div>
+<div class="border-t border-gray-800 pt-6">
+<div class="flex flex-col md:flex-row justify-between items-center">
+<p class="text-gray-400 text-sm mb-4 md:mb-0">© 2025 PokéVerse. All rights reserved. Pokémon and related properties are trademarks of Nintendo.</p>
+<div class="flex space-x-4">
+<i class="ri-visa-fill text-2xl text-gray-400"></i>
+<i class="ri-mastercard-fill text-2xl text-gray-400"></i>
+<i class="ri-paypal-fill text-2xl text-gray-400"></i>
+<i class="ri-apple-fill text-2xl text-gray-400"></i>
+</div>
+</div>
+</div>
+</div>
+</footer>
+<script id="darkModeToggle">
+document.addEventListener('DOMContentLoaded', function() {
+const darkModeToggle = document.getElementById('darkModeToggle');
+darkModeToggle.addEventListener('change', function() {
+if (this.checked) {
+document.documentElement.classList.add('dark');
+} else {
+document.documentElement.classList.remove('dark');
+}
+});
+});
+</script>
+<script id="searchFunctionality">
+document.addEventListener('DOMContentLoaded', function() {
+const searchInput = document.querySelector('.search-input');
+searchInput.addEventListener('focus', function() {
+this.classList.add('border-primary');
+});
+searchInput.addEventListener('blur', function() {
+this.classList.remove('border-primary');
+});
+});
+</script>
+</body>
+</html>

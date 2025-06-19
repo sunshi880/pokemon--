@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Pokémon - PokéVerse</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#e53935',secondary:'#3b82f6'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.3);
+        }
+        .filter-chip {
+            transition: all 0.2s ease;
+        }
+        .filter-chip.active {
+            background-color: var(--color-bg);
+            color: white;
+        }
+        .custom-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .custom-checkbox:checked {
+            background-color: #e53935;
+            border-color: #e53935;
+        }
+        .custom-checkbox:checked::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 6px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        .custom-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+        .custom-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .switch-slider {
+            background-color: #e53935;
+        }
+        input:checked + .switch-slider:before {
+            transform: translateX(24px);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #e53935;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: #e53935;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+        .pokemon-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .pokemon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .loader {
+            border-top-color: #e53935;
+            animation: spinner 0.6s linear infinite;
+        }
+        @keyframes spinner {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="bg-white min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="#" class="text-primary text-3xl font-['Pacifico']">PokéVerse</a>
+            
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="INDEX.HTML" data-readdy="true" class="text-gray-800 font-medium hover:text-primary transition-colors">Home</a>
+                <a href="EXPLORE.HTML" class="text-primary font-medium border-b-2 border-primary pb-1">Explore</a>
+                <a href="NEWS.HTML" class="text-gray-800 font-medium hover:text-primary transition-colors">News</a>
+                <a href="#" class="text-gray-800 font-medium hover:text-primary transition-colors">About</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <label class="custom-switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="switch-slider"></span>
+                </label>
+                <button class="bg-white text-primary border border-primary px-4 py-2 rounded-button font-medium hover:bg-gray-50 transition-colors whitespace-nowrap">Log In</button>
+                <button class="bg-primary text-white px-4 py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">Sign Up</button>
+                <button class="md:hidden w-10 h-10 flex items-center justify-center text-gray-700">
+                    <i class="ri-menu-line ri-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow pt-16">
+        <!-- Page Header -->
+        <section class="bg-gray-50 py-8">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <div class="flex items-center mb-2">
+                            <a href="INDEX.HTML">
+                                <i class="ri-arrow-left-line mr-1"></i>Back to Home
+                            </a>
+                        </div>
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900">All Pokémon</h1>
+                        <p class="text-gray-600 mt-2">Explore the complete Pokédex with detailed information on all Pokémon species</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 flex items-center">
+                        <span class="text-gray-600 mr-3">Total: <span class="font-bold">898</span> Pokémon</span>
+                        <button id="viewToggle" class="w-10 h-10 flex items-center justify-center bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            <i class="ri-grid-fill"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search and Filter Section -->
+        <section class="py-6 border-b">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col lg:flex-row gap-4">
+                    <!-- Search Bar -->
+                    <div class="lg:w-1/3">
+                        <div class="relative">
+                            <input type="text" id="pokemonSearch" placeholder="Search by name or ID..." class="search-input w-full px-5 py-3 pr-12 bg-white border border-gray-300 rounded-lg text-gray-700 focus:border-primary transition-colors">
+                            <button class="absolute right-4 top-1/2 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center text-gray-500 hover:text-primary">
+                                <i class="ri-search-line ri-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Sort Options -->
+                    <div class="lg:w-1/3 flex items-center">
+                        <label for="sortOption" class="text-gray-700 mr-3 whitespace-nowrap">Sort by:</label>
+                        <div class="relative flex-grow">
+                            <div id="sortDropdown" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-700 cursor-pointer flex items-center justify-between">
+                                <span id="selectedSort">ID Number (Ascending)</span>
+                                <i class="ri-arrow-down-s-line"></i>
+                            </div>
+                            <div id="sortOptions" class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg hidden">
+                                <div class="py-1">
+                                    <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer sort-option" data-value="id-asc">ID Number (Ascending)</div>
+                                    <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer sort-option" data-value="id-desc">ID Number (Descending)</div>
+                                    <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer sort-option" data-value="name-asc">Name (A-Z)</div>
+                                    <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer sort-option" data-value="name-desc">Name (Z-A)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter Buttons -->
+                    <div class="lg:w-1/3 flex items-center justify-end space-x-3">
+                        <button id="filterButton" class="px-4 py-2 bg-white border border-gray-300 rounded-button text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center whitespace-nowrap">
+                            <i class="ri-filter-3-line mr-2"></i>Filters
+                        </button>
+                        <button id="clearFilters" class="px-4 py-2 bg-white border border-gray-300 rounded-button text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center whitespace-nowrap hidden">
+                            <i class="ri-close-line mr-2"></i>Clear Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Active Filters Section -->
+        <section id="activeFiltersSection" class="py-4 bg-gray-50 hidden">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-gray-700 font-medium">Active Filters:</span>
+                    <div id="activeFiltersContainer" class="flex flex-wrap gap-2">
+                        <!-- Active filters will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filter Panel (Hidden by default) -->
+        <section id="filterPanel" class="py-6 bg-white border-b hidden">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Type Filters -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Pokémon Type</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="filter-chip px-3 py-2 rounded-full text-sm font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors whitespace-nowrap" data-type="fire" style="--color-bg: #e53935;">
+                                <i class="ri-fire-line mr-1"></i>Fire
+                            </button>
+                            <button class="filter-chip px-3 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors whitespace-nowrap" data-type="water" style="--color-bg: #3b82f6;">
+                                <i class="ri-water-flash-line mr-1"></i>Water
+                            </button>
+                            <button class="filter-chip px-3 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700 hover:bg-green-200 transition-colors whitespace-nowrap" data-type="grass" style="--color-bg: #10b981;">
+                                <i class="ri-plant-line mr-1"></i>Grass
+                            </button>
+                            <button class="filter-chip px-3 py-2 rounded-full text-sm font-medium bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition-colors whitespace-nowrap" data-type="electric" style="--color-bg: #eab308;">
+                                <i class="ri-flashlight-line mr-1"></i>Electric
+                            </button>
+                            <button class="filter-chip px-3 py-2 rounded-full text-sm font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors whitespace-nowrap" data-type="psychic" style="--color-bg: #8b5cf6;">
+                                <i class="ri-ghost-line mr-1"></i>Psychic
+                            </button>
+                            <button class="filter-chip px-3 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors whitespace-nowrap" data-type="normal" style="--color-bg: #6b7280;">
+                                <i class="ri-circle-line mr-1"></i>Normal
+                            </button>
+                            <button class="filter-chip px-3 py-2 rounded-full text-sm font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors whitespace-nowrap" data-type="poison" style="--color-bg: #8b5cf6;">
+                                <i class="ri-skull-line mr-1"></i>Poison
+                            </button>
+                            <button class="filter-chip px-3 py-2 rounded-full text-sm font-medium bg-amber-100 text-amber-700 hover:bg-amber-200 transition-colors whitespace-nowrap" data-type="ground" style="--color-bg: #d97706;">
+                                <i class="ri-landscape-line mr-1"></i>Ground
+                            </button>
+                            <button class="filter-chip px-3 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors whitespace-nowrap" data-type="flying" style="--color-bg: #3b82f6;">
+                                <i class="ri-cloud-line mr-1"></i>Flying
+                            </button>
+                            <button class="filter-chip px-3 py-2 rounded-full text-sm font-medium bg-pink-100 text-pink-700 hover:bg-pink-200 transition-colors whitespace-nowrap" data-type="fairy" style="--color-bg: #ec4899;">
+                                <i class="ri-star-line mr-1"></i>Fairy
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Generation Filters -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Generation</h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" class="custom-checkbox generation-filter" data-gen="1">
+                                <span class="text-gray-700">Generation I</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" class="custom-checkbox generation-filter" data-gen="2">
+                                <span class="text-gray-700">Generation II</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" class="custom-checkbox generation-filter" data-gen="3">
+                                <span class="text-gray-700">Generation III</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" class="custom-checkbox generation-filter" data-gen="4">
+                                <span class="text-gray-700">Generation IV</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" class="custom-checkbox generation-filter" data-gen="5">
+                                <span class="text-gray-700">Generation V</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" class="custom-checkbox generation-filter" data-gen="6">
+                                <span class="text-gray-700">Generation VI</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" class="custom-checkbox generation-filter" data-gen="7">
+                                <span class="text-gray-700">Generation VII</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" class="custom-checkbox generation-filter" data-gen="8">
+                                <span class="text-gray-700">Generation VIII</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Advanced Filters -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Advanced Filters</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-gray-700 mb-2">Base Stat Total</label>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-sm text-gray-600">0</span>
+                                    <input type="range" id="statRangeMin" min="0" max="720" value="0" class="flex-grow">
+                                    <input type="range" id="statRangeMax" min="0" max="720" value="720" class="flex-grow">
+                                    <span class="text-sm text-gray-600">720</span>
+                                </div>
+                                <div class="flex justify-between mt-1">
+                                    <span id="statRangeMinValue" class="text-sm text-gray-700">0</span>
+                                    <span id="statRangeMaxValue" class="text-sm text-gray-700">720</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col space-y-2">
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="custom-checkbox" id="legendaryFilter">
+                                    <span class="text-gray-700">Legendary Pokémon</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="custom-checkbox" id="megaEvolutionFilter">
+                                    <span class="text-gray-700">Mega Evolutions</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="custom-checkbox" id="gigantamaxFilter">
+                                    <span class="text-gray-700">Gigantamax Forms</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end mt-6">
+                    <button id="applyFilters" class="bg-primary text-white px-6 py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pokémon Grid -->
+        <section class="py-8">
+            <div class="container mx-auto px-4">
+                <!-- Pokémon Grid -->
+                <div id="pokemonGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <!-- Pokémon Card 1 -->
+                    <div class="pokemon-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="h-48 bg-red-50 flex items-center justify-center p-4">
+                            <img src="https://th.bing.com/th/id/R.91f409ca64a28fd0dbebcb05b8b41f7f?rik=TT6j%2f5QxhW7bcw&pid=ImgRaw&r=0" alt="Charizard" class="h-full object-contain">
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">Charizard</h3>
+                                <span class="text-sm text-gray-500">#006</span>
+                            </div>
+                            <div class="flex gap-2 mb-3">
+                                <span class="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-medium">Fire</span>
+                                <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">Flying</span>
+                            </div>
+                            <button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Pokémon Card 2 -->
+                    <div class="pokemon-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="h-48 bg-blue-50 flex items-center justify-center p-4">
+                            <img src="https://www.pngall.com/wp-content/uploads/15/Blastoise-PNG-Images.png" alt="Blastoise" class="h-full object-contain">
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">Blastoise</h3>
+                                <span class="text-sm text-gray-500">#009</span>
+                            </div>
+                            <div class="flex gap-2 mb-3">
+                                <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">Water</span>
+                            </div>
+                            <button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Pokémon Card 3 -->
+                    <div class="pokemon-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="h-48 bg-green-50 flex items-center justify-center p-4">
+                            <img src="https://images.wikidexcdn.net/mwuploads/wikidex/thumb/b/be/latest/20160309230456/Venusaur.png/1298px-Venusaur.png" alt="Venusaur" class="h-full object-contain">
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">Venusaur</h3>
+                                <span class="text-sm text-gray-500">#003</span>
+                            </div>
+                            <div class="flex gap-2 mb-3">
+                                <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">Grass</span>
+                                <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs font-medium">Poison</span>
+                            </div>
+                            <button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Pokémon Card 4 -->
+                    <div class="pokemon-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="h-48 bg-yellow-50 flex items-center justify-center p-4">
+                            <img src="https://readdy.ai/api/search-image?query=A%2520detailed%252C%2520clean%2520digital%2520illustration%2520of%2520Pikachu%252C%2520the%2520electric%2520mouse%2520Pok%25C3%25A9mon%2520with%2520yellow%2520body%2520and%2520red%2520cheeks%252C%2520standing%2520in%2520a%2520cute%2520pose%2520against%2520a%2520simple%2520gradient%2520background.%2520The%2520image%2520should%2520be%2520high%2520quality%2520with%2520clean%2520lines%2520and%2520vibrant%2520colors%252C%2520focusing%2520on%2520the%2520Pok%25C3%25A9mon%2520with%2520minimal%2520background%2520elements.&width=300&height=300&seq=pikachu-1&orientation=squarish" alt="Pikachu" class="h-full object-contain">
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">Pikachu</h3>
+                                <span class="text-sm text-gray-500">#025</span>
+                            </div>
+                            <div class="flex gap-2 mb-3">
+                                <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-medium">Electric</span>
+                            </div>
+                            <button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Pokémon Card 5 -->
+                    <div class="pokemon-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="h-48 bg-purple-50 flex items-center justify-center p-4">
+                            <img src="https://www.pngmart.com/files/23/Gengar-PNG.png" alt="Gengar" class="h-full object-contain">
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">Gengar</h3>
+                                <span class="text-sm text-gray-500">#094</span>
+                            </div>
+                            <div class="flex gap-2 mb-3">
+                                <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs font-medium">Ghost</span>
+                                <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs font-medium">Poison</span>
+                            </div>
+                            <button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Pokémon Card 6 -->
+                    <div class="pokemon-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="h-48 bg-amber-50 flex items-center justify-center p-4">
+                            <img src="https://www.pngmart.com/files/22/Dragonite-Pokemon-PNG-HD.png" alt="Dragonite" class="h-full object-contain">
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">Dragonite</h3>
+                                <span class="text-sm text-gray-500">#149</span>
+                            </div>
+                            <div class="flex gap-2 mb-3">
+                                <span class="bg-amber-100 text-amber-700 px-2 py-1 rounded-full text-xs font-medium">Dragon</span>
+                                <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">Flying</span>
+                            </div>
+                            <button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Pokémon Card 7 -->
+                    <div class="pokemon-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="h-48 bg-gray-50 flex items-center justify-center p-4">
+                            <img src="https://www.pngplay.com/wp-content/uploads/11/Mewtwo-Pokemon-No-Background-Clip-Art.png" alt="Mewtwo" class="h-full object-contain">
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">Mewtwo</h3>
+                                <span class="text-sm text-gray-500">#150</span>
+                            </div>
+                            <div class="flex gap-2 mb-3">
+                                <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs font-medium">Psychic</span>
+                            </div>
+                            <button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Pokémon Card 8 -->
+                    <div class="pokemon-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="h-48 bg-pink-50 flex items-center justify-center p-4">
+                            <img src="https://www.pngplay.com/wp-content/uploads/12/Sylveon-Pokemon-PNG-Pic-Background.png" alt="Sylveon" class="h-full object-contain">
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">Sylveon</h3>
+                                <span class="text-sm text-gray-500">#700</span>
+                            </div>
+                            <div class="flex gap-2 mb-3">
+                                <span class="bg-pink-100 text-pink-700 px-2 py-1 rounded-full text-xs font-medium">Fairy</span>
+                            </div>
+                            <button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Pokémon Card 9 -->
+                    <div class="pokemon-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="h-48 bg-gray-50 flex items-center justify-center p-4">
+                            <img src="https://www.pngplay.com/wp-content/uploads/11/Lucario-Pokemon-Transparent-Free-PNG.png" alt="Lucario" class="h-full object-contain">
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">Lucario</h3>
+                                <span class="text-sm text-gray-500">#448</span>
+                            </div>
+                            <div class="flex gap-2 mb-3">
+                                <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-medium">Fighting</span>
+                                <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-medium">Steel</span>
+                            </div>
+                            <button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Pokémon Card 10 -->
+                    <div class="pokemon-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="h-48 bg-blue-50 flex items-center justify-center p-4">
+                            <img src="https://www.pngall.com/wp-content/uploads/15/Greninja-PNG-Free-Image.png" alt="Greninja" class="h-full object-contain">
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">Greninja</h3>
+                                <span class="text-sm text-gray-500">#658</span>
+                            </div>
+                            <div class="flex gap-2 mb-3">
+                                <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">Water</span>
+                                <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-medium">Dark</span>
+                            </div>
+                            <button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Pokémon Card 11 -->
+                    <div class="pokemon-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="h-48 bg-amber-50 flex items-center justify-center p-4">
+                            <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c5d329ab-6331-449d-bae9-6a5e84f72586/dczkjpm-e825dc11-e0ad-4407-9a40-b117dbc87951.png/v1/fill/w_930,h_859/garchomp__transparent__by_miukah_dczkjpm-pre.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTQ2IiwicGF0aCI6IlwvZlwvYzVkMzI5YWItNjMzMS00NDlkLWJhZTktNmE1ZTg0ZjcyNTg2XC9kY3pranBtLWU4MjVkYzExLWUwYWQtNDQwNy05YTQwLWIxMTdkYmM4Nzk1MS5wbmciLCJ3aWR0aCI6Ijw9MTAyNCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.54DtQqhS4O5rTm5U-zlKDC7BZwiXR_SugRHwOuTpdLM" alt="Garchomp" class="h-full object-contain">
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">Garchomp</h3>
+                                <span class="text-sm text-gray-500">#445</span>
+                            </div>
+                            <div class="flex gap-2 mb-3">
+                                <span class="bg-amber-100 text-amber-700 px-2 py-1 rounded-full text-xs font-medium">Dragon</span>
+                                <span class="bg-amber-100 text-amber-700 px-2 py-1 rounded-full text-xs font-medium">Ground</span>
+                            </div>
+                            <button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Pokémon Card 12 -->
+                    <div class="pokemon-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="h-48 bg-red-50 flex items-center justify-center p-4">
+                            <img src="https://th.bing.com/th/id/R.5ca5c5eae22052b5b8f9f7b4a4385182?rik=7T8Ngk8DN2KuTA&pid=ImgRaw&r=0" alt="Arcanine" class="h-full object-contain">
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">Arcanine</h3>
+                                <span class="text-sm text-gray-500">#059</span>
+                            </div>
+                            <div class="flex gap-2 mb-3">
+                                <span class="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-medium">Fire</span>
+                            </div>
+                            <button class="w-full bg-primary text-white py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Load More -->
+                <div id="loadMoreContainer" class="mt-8 flex justify-center">
+                    <button id="loadMoreBtn" class="bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-button font-medium hover:bg-gray-50 transition-colors flex items-center whitespace-nowrap">
+                        <i class="ri-refresh-line mr-2"></i>Load More Pokémon
+                    </button>
+                </div>
+
+                <!-- Loading Indicator (Hidden by default) -->
+                <div id="loadingIndicator" class="mt-8 flex justify-center hidden">
+                    <div class="loader w-10 h-10 border-4 border-gray-200 rounded-full animate-spin"></div>
+                </div>
+
+                <!-- Empty State (Hidden by default) -->
+                <div id="emptyState" class="py-16 text-center hidden">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="ri-search-line ri-2x text-gray-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">No Pokémon Found</h3>
+                    <p class="text-gray-600 mb-6 max-w-md mx-auto">We couldn't find any Pokémon matching your search criteria. Try adjusting your filters or search term.</p>
+                    <button id="resetFiltersBtn" class="bg-primary text-white px-6 py-2 rounded-button font-medium hover:bg-red-700 transition-colors whitespace-nowrap">
+                        Reset All Filters
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-['Pacifico'] mb-4">PokéVerse</h3>
+                    <p class="text-gray-400 mb-4">Your ultimate destination for all things Pokémon. Explore, battle, and connect with trainers worldwide.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="ri-facebook-fill"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="ri-twitter-x-fill"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="ri-instagram-fill"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="ri-discord-fill"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="INDEX.HTML" data-readdy="true" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="EXPLORE.HTML" class="text-gray-400 hover:text-white transition-colors">Pokédex</a></li>
+                        <li><a href="NEWS.HTML" class="text-gray-400 hover:text-white transition-colors">News & Events</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Community Guidelines</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact Us</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="ri-map-pin-line mt-1 mr-2 text-gray-400"></i>
+                            <span class="text-gray-400">123 Poké Street, Kanto Region, 94538</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="ri-mail-line mr-2 text-gray-400"></i>
+                            <a href="mailto:info@pokeverse.com" class="text-gray-400 hover:text-white transition-colors">info@pokeverse.com</a>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="ri-phone-line mr-2 text-gray-400"></i>
+                            <a href="tel:+1234567890" class="text-gray-400 hover:text-white transition-colors">+1 (234) 567-890</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-6">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2025 PokéVerse. All rights reserved. Pokémon and related properties are trademarks of Nintendo.</p>
+                    <div class="flex space-x-4">
+                        <i class="ri-visa-fill text-2xl text-gray-400"></i>
+                        <i class="ri-mastercard-fill text-2xl text-gray-400"></i>
+                        <i class="ri-paypal-fill text-2xl text-gray-400"></i>
+                        <i class="ri-apple-fill text-2xl text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script id="darkModeToggle">
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            
+            darkModeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            });
+        });
+    </script>
+
+    <script id="searchFunctionality">
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('#pokemonSearch');
+            
+            searchInput.addEventListener('focus', function() {
+                this.classList.add('border-primary');
+            });
+            
+            searchInput.addEventListener('blur', function() {
+                this.classList.remove('border-primary');
+            });
+            
+            searchInput.addEventListener('input', function() {
+                // Simulate search functionality
+                if (this.value.trim() !== '') {
+                    document.getElementById('clearFilters').classList.remove('hidden');
+                } else if (!document.querySelector('.filter-chip.active') && 
+                           !document.querySelector('.generation-filter:checked')) {
+                    document.getElementById('clearFilters').classList.add('hidden');
+                }
+                
+                // For demo purposes, show empty state if search is "missingno"
+                if (this.value.toLowerCase() === 'missingno') {
+                    document.getElementById('pokemonGrid').classList.add('hidden');
+                    document.getElementById('loadMoreContainer').classList.add('hidden');
+                    document.getElementById('emptyState').classList.remove('hidden');
+                } else {
+                    document.getElementById('pokemonGrid').classList.remove('hidden');
+                    document.getElementById('loadMoreContainer').classList.remove('hidden');
+                    document.getElementById('emptyState').classList.add('hidden');
+                }
+            });
+        });
+    </script>
+
+    <script id="filterFunctionality">
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButton = document.getElementById('filterButton');
+            const filterPanel = document.getElementById('filterPanel');
+            const applyFilters = document.getElementById('applyFilters');
+            const clearFilters = document.getElementById('clearFilters');
+            const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+            const activeFiltersSection = document.getElementById('activeFiltersSection');
+            const activeFiltersContainer = document.getElementById('activeFiltersContainer');
+            const typeFilters = document.querySelectorAll('.filter-chip');
+            const generationFilters = document.querySelectorAll('.generation-filter');
+            
+            // Toggle filter panel
+            filterButton.addEventListener('click', function() {
+                filterPanel.classList.toggle('hidden');
+            });
+            
+            // Apply filters
+            applyFilters.addEventListener('click', function() {
+                filterPanel.classList.add('hidden');
+                
+                // Clear existing active filters
+                activeFiltersContainer.innerHTML = '';
+                
+                // Add active type filters
+                let hasActiveFilters = false;
+                
+                document.querySelectorAll('.filter-chip.active').forEach(chip => {
+                    const type = chip.getAttribute('data-type');
+                    const bgColor = getComputedStyle(chip).getPropertyValue('--color-bg');
+                    
+                    const filterTag = document.createElement('div');
+                    filterTag.className = 'px-3 py-1 rounded-full text-xs font-medium flex items-center whitespace-nowrap';
+                    filterTag.style.backgroundColor = bgColor;
+                    filterTag.style.color = 'white';
+                    filterTag.innerHTML = `${type} <i class="ri-close-line ml-1 cursor-pointer"></i>`;
+                    
+                    activeFiltersContainer.appendChild(filterTag);
+                    hasActiveFilters = true;
+                });
+                
+                // Add active generation filters
+                document.querySelectorAll('.generation-filter:checked').forEach(checkbox => {
+                    const gen = checkbox.getAttribute('data-gen');
+                    
+                    const filterTag = document.createElement('div');
+                    filterTag.className = 'px-3 py-1 rounded-full text-xs font-medium bg-gray-700 text-white flex items-center whitespace-nowrap';
+                    filterTag.innerHTML = `Generation ${gen} <i class="ri-close-line ml-1 cursor-pointer"></i>`;
+                    
+                    activeFiltersContainer.appendChild(filterTag);
+                    hasActiveFilters = true;
+                });
+                
+                // Show active filters section if there are active filters
+                if (hasActiveFilters || document.getElementById('pokemonSearch').value.trim() !== '') {
+                    activeFiltersSection.classList.remove('hidden');
+                    clearFilters.classList.remove('hidden');
+                } else {
+                    activeFiltersSection.classList.add('hidden');
+                    clearFilters.classList.add('hidden');
+                }
+            });
+            
+            // Clear all filters
+            const clearAllFilters = function() {
+                // Reset type filters
+                typeFilters.forEach(chip => {
+                    chip.classList.remove('active');
+                });
+                
+                // Reset generation filters
+                generationFilters.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                // Reset advanced filters
+                document.getElementById('legendaryFilter').checked = false;
+                document.getElementById('megaEvolutionFilter').checked = false;
+                document.getElementById('gigantamaxFilter').checked = false;
+                
+                // Reset stat range
+                document.getElementById('statRangeMin').value = 0;
+                document.getElementById('statRangeMax').value = 720;
+                document.getElementById('statRangeMinValue').textContent = '0';
+                document.getElementById('statRangeMaxValue').textContent = '720';
+                
+                // Reset search
+                document.getElementById('pokemonSearch').value = '';
+                
+                // Hide active filters section
+                activeFiltersSection.classList.add('hidden');
+                clearFilters.classList.add('hidden');
+                
+                // Show all Pokémon
+                document.getElementById('pokemonGrid').classList.remove('hidden');
+                document.getElementById('loadMoreContainer').classList.remove('hidden');
+                document.getElementById('emptyState').classList.add('hidden');
+            };
+            
+            clearFilters.addEventListener('click', clearAllFilters);
+            resetFiltersBtn.addEventListener('click', clearAllFilters);
+            
+            // Type filter toggle
+            typeFilters.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+            
+            // Stat range sliders
+            const statRangeMin = document.getElementById('statRangeMin');
+            const statRangeMax = document.getElementById('statRangeMax');
+            const statRangeMinValue = document.getElementById('statRangeMinValue');
+            const statRangeMaxValue = document.getElementById('statRangeMaxValue');
+            
+            statRangeMin.addEventListener('input', function() {
+                statRangeMinValue.textContent = this.value;
+                // Ensure min doesn't exceed max
+                if (parseInt(this.value) > parseInt(statRangeMax.value)) {
+                    statRangeMax.value = this.value;
+                    statRangeMaxValue.textContent = this.value;
+                }
+            });
+            
+            statRangeMax.addEventListener('input', function() {
+                statRangeMaxValue.textContent = this.value;
+                // Ensure max doesn't go below min
+                if (parseInt(this.value) < parseInt(statRangeMin.value)) {
+                    statRangeMin.value = this.value;
+                    statRangeMinValue.textContent = this.value;
+                }
+            });
+        });
+    </script>
+
+    <script id="sortDropdownFunctionality">
+        document.addEventListener('DOMContentLoaded', function() {
+            const sortDropdown = document.getElementById('sortDropdown');
+            const sortOptions = document.getElementById('sortOptions');
+            const selectedSort = document.getElementById('selectedSort');
+            const sortOptionElements = document.querySelectorAll('.sort-option');
+            
+            // Toggle dropdown
+            sortDropdown.addEventListener('click', function() {
+                sortOptions.classList.toggle('hidden');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!sortDropdown.contains(event.target) && !sortOptions.contains(event.target)) {
+                    sortOptions.classList.add('hidden');
+                }
+            });
+            
+            // Select option
+            sortOptionElements.forEach(option => {
+                option.addEventListener('click', function() {
+                    selectedSort.textContent = this.textContent;
+                    sortOptions.classList.add('hidden');
+                    
+                    // Simulate sorting (for demo purposes)
+                    const sortValue = this.getAttribute('data-value');
+                    console.log('Sorting by:', sortValue);
+                });
+            });
+        });
+    </script>
+
+    <script id="infiniteScrollFunctionality">
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            
+            loadMoreBtn.addEventListener('click', function() {
+                // Hide load more button, show loading indicator
+                loadMoreBtn.classList.add('hidden');
+                loadingIndicator.classList.remove('hidden');
+                
+                // Simulate loading delay
+                setTimeout(function() {
+                    // Hide loading indicator, show load more button
+                    loadingIndicator.classList.add('hidden');
+                    loadMoreBtn.classList.remove('hidden');
+                    
+                    // For demo purposes, we'll just show a message
+                    console.log('More Pokémon loaded!');
+                }, 1500);
+            });
+        });
+    </script>
+
+    <script id="viewToggleFunctionality">
+        document.addEventListener('DOMContentLoaded', function() {
+            const viewToggle = document.getElementById('viewToggle');
+            const pokemonGrid = document.getElementById('pokemonGrid');
+            let isGridView = true;
+            
+            viewToggle.addEventListener('click', function() {
+                if (isGridView) {
+                    // Switch to list view
+                    pokemonGrid.classList.remove('grid-cols-1', 'sm:grid-cols-2', 'md:grid-cols-3', 'lg:grid-cols-4');
+                    pokemonGrid.classList.add('grid-cols-1');
+                    viewToggle.innerHTML = '<i class="ri-list-check"></i>';
+                    
+                    // Update card layout for list view
+                    document.querySelectorAll('.pokemon-card').forEach(card => {
+                        card.classList.add('flex');
+                        const imageDiv = card.querySelector('div:first-child');
+                        imageDiv.classList.remove('h-48');
+                        imageDiv.classList.add('h-24', 'w-24', 'flex-shrink-0');
+                    });
+                } else {
+                    // Switch to grid view
+                    pokemonGrid.classList.remove('grid-cols-1');
+                    pokemonGrid.classList.add('grid-cols-1', 'sm:grid-cols-2', 'md:grid-cols-3', 'lg:grid-cols-4');
+                    viewToggle.innerHTML = '<i class="ri-grid-fill"></i>';
+                    
+                    // Update card layout for grid view
+                    document.querySelectorAll('.pokemon-card').forEach(card => {
+                        card.classList.remove('flex');
+                        const imageDiv = card.querySelector('div:first-child');
+                        imageDiv.classList.add('h-48');
+                        imageDiv.classList.remove('h-24', 'w-24', 'flex-shrink-0');
+                    });
+                }
+                
+                isGridView = !isGridView;
+            });
+        });
+    </script>
+</body>
+</html>
